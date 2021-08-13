@@ -32,6 +32,21 @@ exit_on_signal_SIGTERM() {
 trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
+sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
+echo "deb http://ftp.debian.org/debian buster main
+deb http://ftp.debian.org/debian buster-updates main
+deb http://ftp.debian.org/debian buster-backports main" >> /etc/apt/sources.list
+
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
+
+apt update -y
+sudo apt install polybar
+rm -rf /etc/apt/sources.list
+sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list
+
 ## Banner
 banner() {
 	clear
