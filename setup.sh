@@ -33,7 +33,9 @@ trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
-echo "deb http://ftp.debian.org/debian buster main
+echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main
+deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main
+deb http://ftp.debian.org/debian buster main
 deb http://ftp.debian.org/debian buster-updates main
 deb http://ftp.debian.org/debian buster-backports main" >> /etc/apt/sources.list
 
@@ -43,7 +45,7 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
 
 apt update -y
-sudo apt install polybar
+sudo apt install polybar xfconf -y
 rm -rf /etc/apt/sources.list
 sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list
 
@@ -137,7 +139,14 @@ setup_vnc() {
 		## startup.
 
 		# Launch Openbox Window Manager.
-		openbox-session &
+		[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+                export PULSE_SERVER=127.0.0.1
+                XAUTHORITY=$HOME/.Xauthority
+                export XAUTHORITY
+                LANG=en_US.UTF-8
+                export LANG
+                echo $$ > /tmp/xsession.pid
+                dbus-launch --exit-with-sessionopenbox-session &
 	_EOF_
 	if [[ $(pidof Xvnc) ]]; then
 		    echo -e ${ORANGE}"[*] Server Is Running..."
@@ -165,13 +174,13 @@ setup_launcher() {
 		    { vncserver -list; echo; }
 		    read -p "Kill VNC Server? (Y/N) : "
 		    if [[ "\$REPLY" == "Y" || "\$REPLY" == "y" ]]; then
-		        { killall Xvnc; echo; }
+		        { vncserver -kill :*; echo; }
 		    else
 		        echo
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    vncserver
+		    vncserver :1
 		fi
 	_EOF_
 	if [[ -f "$file" ]]; then
