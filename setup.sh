@@ -87,11 +87,9 @@ setup_base() {
 	echo -e ${RED}"\n[*] Installing Termux Desktop..."
 	echo -e ${CYAN}"\n[*] Updating Termux Base... \n"
 	{ reset_color; sudo apt autoclean; sudo apt upgrade -y; }
-	echo -e ${CYAN}"\n[*] Enabling Termux X11-repo... \n"
-	{ reset_color; sudo apt install -y x11-repo; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_apts[@]}"; do
-		{ reset_color; sudo apt-get install -y "$package"; }
+		{ reset_color; sudo apt-get install -y "$package" --no-install-recomends; }
 		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
 		if [[ "$_checkapt" == "$package" ]]; then
