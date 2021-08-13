@@ -32,6 +32,12 @@ exit_on_signal_SIGTERM() {
 trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
+echo "Removing distribution provided chromium packages and dependencies..."
+apt purge chromium* chromium-browser* snapd -y -qq && apt autoremove -y -qq
+sudo apt purge chromium* chromium-browser* -y -qq && apt autoremove -y -qq
+apt update -qq; apt install software-properties-common gnupg --no-install-recommends -y -qq
+echo "Adding Debian repo for Chromium installation"
+
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
 echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main
 deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main
@@ -45,7 +51,7 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
 
 apt update -y
-sudo apt install polybar xfconf -y
+sudo apt install chromium polybar xfconf -y
 rm -rf /etc/apt/sources.list
 sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list
 
