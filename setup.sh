@@ -71,8 +71,9 @@ usage() {
 _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-utils fsmon \
 		geany git gtk2.0 gtk3.0 imagemagick jq leafpad man mpc mpd mutt ncmpcpp \
 		ncurses-utils neofetch netsurf obconf openbox openssl-tool polybar ranger rofi \
+                nautilus tigervnc-standalone-server tigervnc-common \
 		startup-notification tigervnc vim wget xarchiver xbitmaps xcompmgr \
-		xfce4-settings xfce4-terminal xmlstarlet xorg zsh)
+		xfce4-settings xfce4-terminal xmlstarlet xorg )
 
 setup_base() {
 	echo -e ${RED}"\n[*] Installing Termux Desktop..."
