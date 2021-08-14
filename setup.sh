@@ -53,7 +53,7 @@ setup_chromium() {
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A; }
-	{ reset_color; sudo apt update; sudo apt autoclean; sudo apt upgrade -y; }
+	{ reset_color; sudo apt update; sudo apt autoclean; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_anu[@]}"; do
 		{ reset_color; sudo apt-get install -y "$package" --no-install-recommends; }
