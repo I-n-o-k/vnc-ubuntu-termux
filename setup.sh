@@ -1,11 +1,6 @@
 #!/usr/bin/bash
 
-## Author  : Aditya Shakya (adi1090x)
-## Mail    : adi1090x@gmail.com
-## Github  : @adi1090x
-## Twitter : @adi1090x
-
-## Termux Desktop : Setup GUI in Termux 
+## OpenBox Desktop : Setup GUI in Ubuntu Termux
 
 ## ANSI Colors (FG & BG)
 RED="$(printf '\033[31m')"  GREEN="$(printf '\033[32m')"  ORANGE="$(printf '\033[33m')"  BLUE="$(printf '\033[34m')"
@@ -32,23 +27,9 @@ exit_on_signal_SIGTERM() {
 trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
-## Banner
-banner() {
-	clear
-    cat <<- EOF
-		${RED}┌──────────────────────────────────────────────────────────┐
-		${RED}│${GREEN}░░░▀█▀░█▀▀░█▀▄░█▄█░█░█░█░█░░░█▀▄░█▀▀░█▀▀░█░█░▀█▀░█▀█░█▀█░░${RED}│
-		${RED}│${GREEN}░░░░█░░█▀▀░█▀▄░█░█░█░█░▄▀▄░░░█░█░█▀▀░▀▀█░█▀▄░░█░░█░█░█▀▀░░${RED}│
-		${RED}│${GREEN}░░░░▀░░▀▀▀░▀░▀░▀░▀░▀▀▀░▀░▀░░░▀▀░░▀▀▀░▀▀▀░▀░▀░░▀░░▀▀▀░▀░░░░${RED}│
-		${RED}└──────────────────────────────────────────────────────────┘
-		${BLUE}By : Aditya Shakya // @adi1090x
-	EOF
-}
-
 ## Show usages
 usage() {
-	banner
-	echo -e ${ORANGE}"\nInstall GUI (Openbox Desktop) on Termux"
+	echo -e ${ORANGE}"\nInstall GUI (Openbox Desktop) on Ubuntu Termux"
 	echo -e ${ORANGE}"Usages : $(basename $0) --install | --uninstall \n"
 }
 
@@ -202,7 +183,7 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -listen -localhost no -depth 24 -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE -AcceptSetDesktopSize=0 $GEO :$PORT
+		    LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -listen -localhost no -depth 24 -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE -AcceptSetDesktopSize=0
 	fi
 	_EOF_
 	if [[ -f "$file" ]]; then
@@ -225,7 +206,6 @@ post_msg() {
 
 ## Install Termux Desktop
 install_td() {
-	banner
 	setup_chromium
 	setup_base
 	setup_config
