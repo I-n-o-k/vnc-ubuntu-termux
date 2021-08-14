@@ -39,8 +39,8 @@ _anu=(chromium polybar xfconf )
 setup_chromium() {
 	echo -e ${RED}"\n[*] Installing Polybar chromium..."
         echo -e ${CYAN}"\n[*] Removing distribution provided chromium packages and dependencies..."
-	{ reset_color; sudo apt purge chromium* chromium-browser* snapd -y -qq && sudo apt autoremove -y -qq; }
-	{ reset_color; sudo apt purge chromium* chromium-browser* -y -qq && sudo apt autoremove -y -qq; }
+	{ reset_color; sudo apt purge snapd -y -qq && sudo apt autoremove -y -qq; }
+	{ reset_color; sudo apt purge chromium* -y && sudo apt autoremove -y -qq; }
 	{ reset_color; sudo apt update -qq; sudo apt install software-properties-common gnupg --no-install-recommends -y -qq; }
 	echo -e ${CYAN}"\n[*] Adding Debian repo for Chromium installation... \n"
 	{ reset_color; sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup; }
@@ -53,11 +53,10 @@ setup_chromium() {
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A; }
-	{ reset_color; sudo apt update; sudo apt autoclean; }
+	{ reset_color; sudo apt update; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for packages in "${_anu[@]}"; do
-		{ reset_color; sudo apt-get install -y "$packages"; }
-		{ reset_color; sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list; }
+		{ reset_color; sudo apt-get install -y chromium polybar xfconf; }
 		_iapt=$(apt list-installed $packages 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
 		if [[ "$_checkapt" == "$packages" ]]; then
@@ -68,7 +67,8 @@ setup_chromium() {
 			{ reset_color; }
 		fi
 	done
-	reset_color
+	{ reset_color; sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list; }
+
 }
 ## Update, X11, Program Installation
 _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-utils fsmon \
