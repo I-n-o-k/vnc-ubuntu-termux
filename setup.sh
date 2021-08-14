@@ -32,29 +32,6 @@ exit_on_signal_SIGTERM() {
 trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
-echo "Removing distribution provided chromium packages and dependencies..."
-sudo apt purge chromium* chromium-browser* snapd -y -qq && apt autoremove -y -qq
-sudo apt purge chromium* chromium-browser* -y -qq && apt autoremove -y -qq
-sudo apt update -qq; apt install software-properties-common gnupg --no-install-recommends -y -qq
-echo "Adding Debian repo for Chromium installation"
-
-sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
-echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main
-deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main
-deb http://ftp.debian.org/debian buster main
-deb http://ftp.debian.org/debian buster-updates main
-deb http://ftp.debian.org/debian buster-backports main" >> /etc/apt/sources.list
-
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
-
-apt update -y
-sudo apt install chromium polybar xfconf -y --no-install-recommends
-rm -rf /etc/apt/sources.list
-sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list
-
 ## Banner
 banner() {
 	clear
@@ -75,6 +52,44 @@ usage() {
 	echo -e ${ORANGE}"Usages : $(basename $0) --install | --uninstall \n"
 }
 
+## Update, chromium polybar xfconf, Program Installation
+_anu=(chromium polybar xfconf )
+
+setup_chromium() {
+	echo -e ${RED}"\n[*] Installing Polybar chromium..."
+        echo -e ${CYAN}"\n[*] Removing distribution provided chromium packages and dependencies..."
+	{ reset_color; sudo apt purge chromium* chromium-browser* snapd -y -qq && sudo apt autoremove -y -qq; }
+	{ reset_color; sudo apt purge chromium* chromium-browser* -y -qq && sudo apt autoremove -y -qq; }
+	{ reset_color; sudo apt update -qq; sudo apt install software-properties-common gnupg --no-install-recommends -y -qq; }
+	echo -e ${CYAN}"\n[*] Adding Debian repo for Chromium installation... \n"
+	{ reset_color; sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup; }
+        { reset_color; echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main" >> /etc/apt/sources.list; }
+        { reset_color; echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main" >> /etc/apt/sources.list; }
+        { reset_color; echo "deb http://ftp.debian.org/debian buster main" >> /etc/apt/sources.list; }
+        { reset_color; echo "deb http://ftp.debian.org/debian buster-updates main" >> /etc/apt/sources.list; }
+        { reset_color; echo "deb http://ftp.debian.org/debian buster-backports main" >> /etc/apt/sources.list; }
+        { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys DCC9EFBF77E11517; }
+        { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138; }
+        { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50; }
+        { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A; }
+	{ reset_color; sudo apt update; sudo apt autoclean; sudo apt upgrade -y; }
+	echo -e ${CYAN}"\n[*] Installing required programs... \n"
+	for package in "${_anu[@]}"; do
+		{ reset_color; sudo apt-get install -y "$package" --no-install-recommends; }
+		{ reset_color; rm -rf /etc/apt/sources.list; }
+		{ reset_color; sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list; }
+		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
+		_checkapt=${_iapt%/*}
+		if [[ "$_checkapt" == "$package" ]]; then
+			echo -e ${GREEN}"\n[*] Package $package installed successfully.\n"
+			continue
+		else
+			echo -e ${MAGENTA}"\n[!] Error installing $package, Terminating...\n"
+			{ reset_color; }
+		fi
+	done
+	reset_color
+}
 ## Update, X11-repo, Program Installation
 _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-utils fsmon \
 		geany git gtk2.0 gtk3.0 imagemagick jq leafpad man mpc mpd mutt ncmpcpp \
@@ -86,7 +101,9 @@ _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-
 setup_base() {
 	echo -e ${RED}"\n[*] Installing Termux Desktop..."
 	echo -e ${CYAN}"\n[*] Updating Termux Base... \n"
-	{ reset_color; sudo apt autoclean; sudo apt upgrade -y; }
+        { reset_color; echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main" >> /etc/apt/sources.list; }
+        { reset_color; echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic-updates main" >> /etc/apt/sources.list; }
+	{ reset_color; sudo update; sudo apt autoclean; sudo apt upgrade -y; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_apts[@]}"; do
 		{ reset_color; sudo apt-get install -y gtk3.0 gtk2.0 xfce4-settings xfce4-terminal; }
@@ -185,8 +202,8 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    vncserver vncserver -localhost no -SecurityTypes none --I-KNOW-THIS-IS-INSECURE :1
-		fi
+		    LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -listen -localhost no -depth 24 -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE -AcceptSetDesktopSize=0 $GEO :$PORT
+	fi
 	_EOF_
 	if [[ -f "$file" ]]; then
 		echo -e ${GREEN}"[*] Script ${ORANGE}$file ${GREEN}created successfully."
@@ -209,8 +226,8 @@ post_msg() {
 ## Install Termux Desktop
 install_td() {
 	banner
+	setup_chromium
 	setup_base
-	setup_omz
 	setup_config
 	setup_vnc
 	setup_launcher
