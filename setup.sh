@@ -33,9 +33,9 @@ trap exit_on_signal_SIGINT SIGINT
 trap exit_on_signal_SIGTERM SIGTERM
 
 echo "Removing distribution provided chromium packages and dependencies..."
-apt purge chromium* chromium-browser* snapd -y -qq && apt autoremove -y -qq
+sudo apt purge chromium* chromium-browser* snapd -y -qq && apt autoremove -y -qq
 sudo apt purge chromium* chromium-browser* -y -qq && apt autoremove -y -qq
-apt update -qq; apt install software-properties-common gnupg --no-install-recommends -y -qq
+sudo apt update -qq; apt install software-properties-common gnupg --no-install-recommends -y -qq
 echo "Adding Debian repo for Chromium installation"
 
 sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup
@@ -89,6 +89,7 @@ setup_base() {
 	{ reset_color; sudo apt autoclean; sudo apt upgrade -y; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_apts[@]}"; do
+		{ reset_color; sudo apt-get install -y gtk3.0 gtk2.0 xfce4-settings xfce4-terminal; }
 		{ reset_color; sudo apt-get install -y "$package" --no-install-recommends; }
 		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
@@ -150,7 +151,7 @@ setup_vnc() {
                 LANG=en_US.UTF-8
                 export LANG
                 echo $$ > /tmp/xsession.pid
-                dbus-launch --exit-with-sessionopenbox-session &
+                dbus-launch --exit-with-session openbox-session &
 	_EOF_
 	if [[ $(pidof Xvnc) ]]; then
 		    echo -e ${ORANGE}"[*] Server Is Running..."
