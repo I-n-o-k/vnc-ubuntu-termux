@@ -55,16 +55,16 @@ setup_chromium() {
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A; }
 	{ reset_color; sudo apt update; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
-	for package in "${_anu[@]}"; do
-		{ reset_color; sudo apt-get install -y "$package"; }
+	for packages in "${_anu[@]}"; do
+		{ reset_color; sudo apt-get install -y "$packages"; }
 		{ reset_color; sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list; }
-		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
+		_iapt=$(apt list-installed $packages 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
-		if [[ "$_checkapt" == "$package" ]]; then
-			echo -e ${GREEN}"\n[*] Package $package installed successfully.\n"
+		if [[ "$_checkapt" == "$packages" ]]; then
+			echo -e ${GREEN}"\n[*] Package $packages installed successfully.\n"
 			continue
 		else
-			echo -e ${MAGENTA}"\n[!] Error installing $package, Terminating...\n"
+			echo -e ${MAGENTA}"\n[!] Error installing $packages, Terminating...\n"
 			{ reset_color; }
 		fi
 	done
