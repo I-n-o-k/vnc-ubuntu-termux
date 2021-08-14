@@ -136,7 +136,7 @@ setup_vnc() {
 		mv $HOME/.vnc{,.old}
 	fi
 	echo -e ${RED}"\n[*] Setting up VNC Server..."
-	{ reset_color; vncserver -localhost; }
+	{ reset_color; vncserver -localhost no; }
 	sed -i -e 's/# geometry=.*/geometry=1366x768/g' $HOME/.vnc/config
 	cat > $HOME/.vnc/xstartup <<- _EOF_
 		#!/usr/bin/bash
@@ -185,7 +185,7 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    vncserver :1
+		    vncserver vncserver -localhost no -SecurityTypes none --I-KNOW-THIS-IS-INSECURE :1
 		fi
 	_EOF_
 	if [[ -f "$file" ]]; then
