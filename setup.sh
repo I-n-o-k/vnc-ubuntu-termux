@@ -57,7 +57,6 @@ setup_chromium() {
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_anu[@]}"; do
 		{ reset_color; sudo apt-get install -y "$package" --no-install-recommends; }
-		{ reset_color; rm -rf /etc/apt/sources.list; }
 		{ reset_color; sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list; }
 		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
@@ -71,7 +70,7 @@ setup_chromium() {
 	done
 	reset_color
 }
-## Update, X11-repo, Program Installation
+## Update, X11, Program Installation
 _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-utils fsmon \
 		geany git gtk2.0 gtk3.0 imagemagick jq leafpad man mpc mpd mutt ncmpcpp \
 		ncurses-utils neofetch netsurf obconf openbox openssl-tool polybar ranger rofi \
