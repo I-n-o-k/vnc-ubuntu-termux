@@ -51,7 +51,7 @@ apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
 
 apt update -y
-sudo apt install chromium polybar xfconf -y
+sudo apt install chromium polybar xfconf -y --no-install-recommends
 rm -rf /etc/apt/sources.list
 sudo mv /etc/apt/sources.list.backup /etc/apt/sources.list
 
@@ -89,7 +89,7 @@ setup_base() {
 	{ reset_color; sudo apt autoclean; sudo apt upgrade -y; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_apts[@]}"; do
-		{ reset_color; sudo apt-get install -y "$package" --no-install-recomends; }
+		{ reset_color; sudo apt-get install -y "$package" --no-install-recommends; }
 		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
 		if [[ "$_checkapt" == "$package" ]]; then
