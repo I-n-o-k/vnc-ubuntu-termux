@@ -53,7 +53,7 @@ setup_chromium() {
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 648ACFD622F3D138; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys AA8E81B4331F7F50; }
         { reset_color; apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A; }
-	{ reset_color; sudo apt update; }
+	{ reset_color; sudo apt update; sudo apt autoclean; }
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for packages in "${_anu[@]}"; do
 		{ reset_color; sudo apt-get install -y "$packages"; }
@@ -134,19 +134,20 @@ setup_vnc() {
 	echo -e ${RED}"\n[*] Setting up VNC Server..."
 	{ reset_color; vncserver -localhost no; }
 	sed -i -e 's/# geometry=.*/geometry=1366x768/g' $HOME/.vnc/config
-	{ reset_color; rm -rf $HOME/.vnc/xstartup; }
-	{ reset_color; touch $HOME/.vnc/xstartup; }
-	{ reset_color; echo "#!/usr/bin/bash" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "## This file is executed during VNC server" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "## startup." >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "# Launch Openbox Window Manager." >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "export PULSE_SERVER=127.0.0.1" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "XAUTHORITY=$HOME/.Xauthority" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "export XAUTHORITY" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "LANG=en_US.UTF-8" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "export LANG" >> $HOME/.vnc/xstartup"; }
-	{ reset_color; echo "dbus-launch --exit-with-session openbox-session &" >> $HOME/.vnc/xstartup"; }
+	cat > $HOME/.vnc/xstartup <<- _EOF_
+	#!/usr/bin/bash
+	## This file is executed during VNC server
+	## startup.
+
+	# Launch Openbox Window Manager.
+	[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
+        export PULSE_SERVER=127.0.0.1
+        XAUTHORITY=$HOME/.Xauthority
+        export XAUTHORITY
+        LANG=en_US.UTF-8
+        export LANG
+        dbus-launch --exit-with-session openbox-session &
+	_EOF_
 	if [[ $(pidof Xvnc) ]]; then
 		    echo -e ${ORANGE}"[*] Server Is Running..."
 		    { reset_color; vncserver -list; }
@@ -179,7 +180,7 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    LD_PRELOAD=/lib/aarch64-linux-gnu/libgcc_s.so.1 vncserver -listen -localhost no -depth 24 -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE -AcceptSetDesktopSize=0
+		    vncserver -listen -localhost no -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE
 	fi
 	_EOF_
 	if [[ -f "$file" ]]; then
