@@ -134,6 +134,7 @@ setup_gl4es() {
                 { reset_color; sudo mkdir -p /usr/lib/gl4es; }
                 { reset_color; sudo cp -rf $(pwd)/gl4es/include/* /usr/include/gl4es/ ; }
                 { reset_color; sudo cp -rf $(pwd)/gl4es/lib/* /usr/lib/gl4es/; }
+                { reset_color; echo "export LD_LIBRARY_PATH=/usr/lib/gl4es/" >> $HOME/.bashrc; }
 
 }
 
@@ -179,7 +180,6 @@ setup_launcher() {
 
 		# Export Display
 		export DISPLAY=:1
-                export LD_LIBRARY_PATH=/usr/lib/gl4es/
 
 		# Start VNC Server
 		if [[ \$(pidof Xvnc) ]]; then
@@ -193,7 +193,7 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
-		    vncserver -listen -localhost no -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE
+		    vncserver :1 -listen -localhost no -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE
 	fi
 	_EOF_
 	if [[ -f "$file" ]]; then
