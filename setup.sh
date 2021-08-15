@@ -141,12 +141,12 @@ setup_vnc() {
 
 	# Launch Openbox Window Manager.
 	[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources
-        export PULSE_SERVER=127.0.0.1
-        XAUTHORITY=$HOME/.Xauthority
-        export XAUTHORITY
-        LANG=en_US.UTF-8
-        export LANG
-        dbus-launch --exit-with-session openbox-session &
+export PULSE_SERVER=127.0.0.1
+XAUTHORITY=$HOME/.Xauthority
+export XAUTHORITY
+LANG=en_US.UTF-8
+export LANG
+dbus-launch --exit-with-session openbox-session &
 	_EOF_
 	if [[ $(pidof Xvnc) ]]; then
 		    echo -e ${ORANGE}"[*] Server Is Running..."
