@@ -87,6 +87,7 @@ setup_base() {
 	echo -e ${CYAN}"\n[*] Installing required programs... \n"
 	for package in "${_apts[@]}"; do
 		{ reset_color; sudo apt-get install -y "$package"; }
+		{ reset_color; sed -i 's/chromium %U/chromium --no-sandbox %U/g' /usr/share/applications/chromium.desktop; }
 		_iapt=$(apt list-installed $package 2>/dev/null | tail -n 1)
 		_checkapt=${_iapt%/*}
 		if [[ "$_checkapt" == "$package" ]]; then
