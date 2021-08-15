@@ -126,6 +126,17 @@ setup_config() {
 	fi
 }
 
+## install gl4es
+setup_gl4es() {
+        # Copy config files
+        echo -e ${RED}"\n[*] Installing gl4es... "
+                { reset_color; sudo mkdir -p /usr/include/gl4es; }
+                { reset_color; sudo mkdir -p /usr/lib/gl4es; }
+                { reset_color; sudo cp -rf $(pwd)/gl4es/include/* /usr/include/gl4es/ ; }
+                { reset_color; sudo cp -rf $(pwd)/gl4es/lib/* /usr/lib/gl4es/; }
+
+}
+
 ## Setup VNC Server
 setup_vnc() {
 	# backup old dir
@@ -167,7 +178,8 @@ setup_launcher() {
 		#!/usr/bin/bash
 
 		# Export Display
-		export DISPLAY=":1"
+		export DISPLAY=:1
+                export LD_LIBRARY_PATH=/usr/lib/gl4es/
 
 		# Start VNC Server
 		if [[ \$(pidof Xvnc) ]]; then
@@ -188,7 +200,6 @@ setup_launcher() {
 		echo -e ${GREEN}"[*] Script ${ORANGE}$file ${GREEN}created successfully."
 	fi
 }
-
 ## Finish Installation
 post_msg() {
 	echo -e ${GREEN}"\n[*] ${RED}Termux Desktop ${GREEN}Installed Successfully.\n"
@@ -207,6 +218,7 @@ install_td() {
 	setup_chromium
 	setup_base
 	setup_config
+        setup_gl4es
 	setup_vnc
 	setup_launcher
 	post_msg
