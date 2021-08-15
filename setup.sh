@@ -76,7 +76,7 @@ _apts=(bc bmon calc calcurse curl dbus desktop-file-utils elinks feh fontconfig-
 		ncurses-utils neofetch netsurf obconf openbox openssl-tool polybar ranger rofi \
                 nautilus tigervnc-standalone-server tigervnc-common \
 		startup-notification tigervnc vim wget xarchiver xbitmaps xcompmgr \
-		xfce4-settings xfce4-terminal xmlstarlet xorg )
+		xfce4-settings dbus-x11 xmlstarlet xorg )
 
 setup_base() {
 	echo -e ${RED}"\n[*] Installing Termux Desktop..."
