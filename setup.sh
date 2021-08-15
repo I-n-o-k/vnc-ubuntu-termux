@@ -39,8 +39,8 @@ _anu=(chromium polybar xfconf )
 setup_chromium() {
 	echo -e ${RED}"\n[*] Installing Polybar chromium..."
         echo -e ${CYAN}"\n[*] Removing distribution provided chromium packages and dependencies..."
-	{ reset_color; sudo apt purge snapd -y -qq && sudo apt autoremove -y -qq; }
-	{ reset_color; sudo apt purge chromium* -y && sudo apt autoremove -y -qq; }
+	{ reset_color; sudo apt remove snapd -yqq -qq && sudo apt autoremove -yqq; }
+	{ reset_color; sudo apt remove chromium* -yqq && sudo apt autoremove -yqq; }
 	{ reset_color; sudo apt update -qq; sudo apt install software-properties-common gnupg --no-install-recommends -y -qq; }
 	echo -e ${CYAN}"\n[*] Adding Debian repo for Chromium installation... \n"
 	{ reset_color; sudo cp /etc/apt/sources.list /etc/apt/sources.list.backup; }
