@@ -126,18 +126,6 @@ setup_config() {
 	fi
 }
 
-## install gl4es
-setup_gl4es() {
-        # Copy config files
-        echo -e ${RED}"\n[*] Installing gl4es... "
-                { reset_color; sudo mkdir -p /usr/include/gl4es; }
-                { reset_color; sudo mkdir -p /usr/lib/gl4es; }
-                { reset_color; sudo cp -rf $(pwd)/gl4es/include/* /usr/include/gl4es/ ; }
-                { reset_color; sudo cp -rf $(pwd)/gl4es/lib/* /usr/lib/gl4es/; }
-                { reset_color; echo "export LD_LIBRARY_PATH=/usr/lib/gl4es/" >> $HOME/.bashrc; }
-
-}
-
 ## Setup VNC Server
 setup_vnc() {
 	# backup old dir
@@ -218,7 +206,6 @@ install_td() {
 	setup_chromium
 	setup_base
 	setup_config
-        setup_gl4es
 	setup_vnc
 	setup_launcher
 	post_msg
