@@ -181,6 +181,7 @@ setup_launcher() {
 		    fi
 		else
 		    echo -e "\\n[*] Starting VNC Server..."
+vncserver -kill :*
 		    vncserver :1 -listen -localhost no -name remote-desktop -SecurityTypes none --I-KNOW-THIS-IS-INSECURE
 	fi
 	_EOF_
